@@ -1,0 +1,134 @@
+{% extends "admin/base.html" %}
+
+{% block page_title %}Nouveau produit{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-12">
+        <h2 class="mb-4">Nouveau produit</h2>
+    </div>
+</div>
+
+<div class="card">
+    <div class="card-body">
+        <form method="POST" action="{{ url_for('admin.product_add') }}" enctype="multipart/form-data">
+            <div class="mb-3">
+                <label class="form-label">Nom *</label>
+                <input type="text" name="nom" class="form-control" required>
+            </div>
+            
+            <div class="mb-3">
+                <label class="form-label">Description</label>
+                <textarea name="description" class="form-control" rows="4"></textarea>
+            </div>
+            
+            <div class="row">
+                <div class="col-md-6 mb-3">
+                    <label class="form-label">Catégorie</label>
+                    <select name="categorie_id" class="form-select">
+                        <option value="">Sélectionner une catégorie</option>
+                        {% for cat in categories %}
+                        <option value="{{ cat._id }}">{{ cat.nom }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <div class="col-md-6 mb-3">
+                    <label class="form-label">Marque</label>
+                    <input type="text" name="marque" class="form-control">
+                </div>
+            </div>
+            
+            <div class="mb-3">
+                <label class="form-label">Prix de base *</label>
+                <input type="number" name="prix_base" class="form-control" step="0.01" min="0" required>
+            </div>
+            
+            <!-- Attributs variables (Variantes) -->
+            <div class="mb-3">
+                <label class="form-label">
+                    <strong>Variantes de produit (optionnel)</strong>
+                    <small class="text-muted d-block">Créez des variantes avec différents attributs (Stockage, Couleur, Taille, etc.)</small>
+                </label>
+                <div class="alert alert-info mb-3" style="background: rgba(92,225,230,0.1); border: 1px solid rgba(92,225,230,0.3);">
+                    <small>
+                        <strong>Exemples :</strong><br>
+                        • Stockage : 128 GB, 256 GB, 512 GB<br>
+                        • Couleur : Noir, Blanc, Rouge, Bleu<br>
+                        • Taille : S, M, L, XL<br>
+                        <em>Les variantes seront générées automatiquement avec toutes les combinaisons possibles.</em>
+                    </small>
+                </div>
+                <div id="attributes-container">
+                    <div class="attribute-row mb-2">
+                        <div class="row">
+                            <div class="col-md-4">
+                                <input type="text" name="attribut_name[]" class="form-control" 
+                                       placeholder="Nom (ex: Stockage, Couleur)">
+                            </div>
+                            <div class="col-md-6">
+                                <input type="text" name="attribut_values[]" class="form-control" 
+                                       placeholder="Valeurs séparées par des virgules (ex: 128 GB, 256 GB, 512 GB)">
+                            </div>
+                            <div class="col-md-2">
+                                <button type="button" class="btn btn-danger btn-sm remove-attribute w-100">Supprimer</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <button type="button" class="btn btn-secondary btn-sm" id="add-attribute">
+                    <i class="bi bi-plus-circle"></i> Ajouter un attribut de variante
+                </button>
+                <div class="mt-2">
+                    <small class="text-muted">
+                        <em>Vous pourrez définir le prix et le stock de chaque variante après la création du produit.</em>
+                    </small>
+                </div>
+            </div>
+            
+            <div class="mb-3">
+                <label class="form-label">Images</label>
+                <input type="file" name="images" class="form-control" multiple accept="image/*">
+            </div>
+            
+            <div class="mb-3 form-check">
+                <input type="checkbox" name="publie" class="form-check-input" id="publie">
+                <label class="form-check-label" for="publie">Publier le produit</label>
+            </div>
+            
+            <button type="submit" class="btn btn-primary">Créer le produit</button>
+            <a href="{{ url_for('admin.products_list') }}" class="btn btn-secondary">Annuler</a>
+        </form>
+    </div>
+</div>
+
+<script>
+document.getElementById('add-attribute').addEventListener('click', function() {
+    const container = document.getElementById('attributes-container');
+    const newRow = document.createElement('div');
+    newRow.className = 'attribute-row mb-2';
+    newRow.innerHTML = `
+        <div class="row">
+            <div class="col-md-4">
+                <input type="text" name="attribut_name[]" class="form-control" placeholder="Nom">
+            </div>
+            <div class="col-md-6">
+                <input type="text" name="attribut_values[]" class="form-control" placeholder="Valeurs séparées par des virgules">
+            </div>
+            <div class="col-md-2">
+                <button type="button" class="btn btn-danger btn-sm remove-attribute">Supprimer</button>
+            </div>
+        </div>
+    `;
+    container.appendChild(newRow);
+});
+
+document.addEventListener('click', function(e) {
+    if (e.target.classList.contains('remove-attribute')) {
+        e.target.closest('.attribute-row').remove();
+    }
+});
+</script>
+{% endblock %}
+
+
+

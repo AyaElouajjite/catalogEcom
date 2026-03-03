@@ -1,0 +1,37 @@
+{% extends "admin/base.html" %}
+
+{% block page_title %}Modifier la catégorie{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-12">
+        <h2 class="mb-4">Modifier la catégorie</h2>
+    </div>
+</div>
+
+<div class="card">
+    <div class="card-body">
+        <form method="POST" action="{{ url_for('admin.category_edit', category_id=category._id) }}">
+            <div class="mb-3">
+                <label class="form-label">Nom *</label>
+                <input type="text" name="nom" class="form-control" value="{{ category.nom }}" required>
+            </div>
+            
+            <div class="mb-3">
+                <label class="form-label">Slug *</label>
+                <input type="text" name="slug" class="form-control" value="{{ category.slug }}" required>
+            </div>
+            
+            <div class="mb-3">
+                <label class="form-label">Description</label>
+                <textarea name="description" class="form-control" rows="3">{{ category.description or '' }}</textarea>
+            </div>
+            
+            <button type="submit" class="btn btn-primary">Enregistrer</button>
+            <a href="{{ url_for('admin.categories_list') }}" class="btn btn-secondary">Annuler</a>
+        </form>
+    </div>
+</div>
+{% endblock %}
+
+

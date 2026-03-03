@@ -1,0 +1,114 @@
+{% extends "base.html" %}
+
+{% block title %}Accueil - Yin Yang{% endblock %}
+
+{% block content %}
+<!-- Hero Section futuriste -->
+<section class="hero-section future-hero py-5 mb-5">
+    <div class="hero-grid"></div>
+    <div class="hero-glow hero-glow-1"></div>
+    <div class="hero-glow hero-glow-2"></div>
+    <div class="container position-relative">
+        <div class="row align-items-center">
+            <div class="col-lg-7">
+                <div class="d-inline-flex align-items-center gap-2 hero-badge mb-3">
+                    <span class="pulse-dot"></span>
+                    <span>Expérience e-commerce nouvelle génération</span>
+                </div>
+                <h1 class="display-4 fw-bold mb-3">
+                    Bienvenue chez <span class="gradient-text">Yin&nbsp;Yang</span>
+                </h1>
+                <p class="lead text-muted mb-4">
+                    Découvrez une sélection premium avec des offres exclusives et une expérience fluide pensée pour vous.
+                </p>
+                <div class="d-flex gap-3 flex-wrap">
+                    <a href="{{ url_for('public.catalogue') }}" class="btn btn-primary btn-lg shadow-lg">Voir le catalogue</a>
+                    <a href="{{ url_for('public.catalogue') }}#categories" class="btn btn-ghost btn-lg">Explorer les catégories</a>
+                </div>
+                <div class="d-flex gap-4 flex-wrap mt-4 hero-metrics">
+                    <div>
+                        <p class="text-muted mb-1">Produits premium</p>
+                        <h5 class="mb-0">+500 références</h5>
+                    </div>
+                    <div>
+                        <p class="text-muted mb-1">Satisfaction</p>
+                        <h5 class="mb-0">4.9 ★ clients</h5>
+                    </div>
+                    <div>
+                        <p class="text-muted mb-1">Livraison rapide</p>
+                        <h5 class="mb-0">&lt; 48h</h5>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-5 text-center mt-5 mt-lg-0">
+                <div class="hero-orb mx-auto">
+                    <div class="hero-logo">
+                        <svg viewBox="0 0 64 64" aria-hidden="true" role="img" aria-label="Yin Yang">
+                            <defs>
+                                <linearGradient id="storeGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+                                    <stop offset="0%" stop-color="#7d5fff"/>
+                                    <stop offset="100%" stop-color="#5ce1e6"/>
+                                </linearGradient>
+                            </defs>
+                            <!-- Yin Yang -->
+                            <circle cx="32" cy="32" r="30" fill="url(#storeGradient)" opacity="0.25"/>
+                            <path fill="#0c0f14" d="M32 2a30 30 0 1 0 0 60c8.284 0 15-6.716 15-15S40.284 32 32 32s-15-6.716-15-15S23.716 2 32 2Z"/>
+                            <path fill="#f4f6fb" d="M32 2c8.284 0 15 6.716 15 15s-6.716 15-15 15-15 6.716-15 15 6.716 15 15 15a30 30 0 0 0 0-60Z"/>
+                            <circle cx="32" cy="17" r="5" fill="#f4f6fb"/>
+                            <circle cx="32" cy="47" r="5" fill="#0c0f14"/>
+                            <circle cx="32" cy="17" r="2" fill="#0c0f14"/>
+                            <circle cx="32" cy="47" r="2" fill="#f4f6fb"/>
+                        </svg>
+                    </div>
+                    <div class="hero-orb-ring"></div>
+                </div>
+                <div class="d-flex justify-content-center gap-3 mt-3 text-muted small">
+                    <span><i class="bi bi-shield-check me-1"></i>Paiement sécurisé</span>
+                    <span><i class="bi bi-truck me-1"></i>Livraison 48h</span>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Produits phares -->
+<div class="container">
+    <h2 class="mb-4">Produits phares</h2>
+    <div class="row">
+        {% if featured_products %}
+            {% for product in featured_products %}
+            <div class="col-md-6 col-lg-3 mb-4">
+                <div class="card h-100 product-card">
+                    {% if product.images_principales and product.images_principales|length > 0 and product.images_principales[0] %}
+                    <img src="{{ url_for('static', filename='images/' + product.images_principales[0]) }}" 
+                         class="card-img-top" 
+                         style="height: 220px; object-fit: cover; background: #0f131b;"
+                         alt="{{ product.nom }}"
+                         onerror="this.onerror=null; this.src='https://via.placeholder.com/300x300?text=Produit'; console.error('Image non trouvée: {{ product.images_principales[0] }}');">
+                    {% else %}
+                    <img src="https://via.placeholder.com/300x300?text=Produit" 
+                         class="card-img-top" 
+                         style="height: 220px; object-fit: cover;"
+                         alt="{{ product.nom }}">
+                    {% endif %}
+                    <div class="card-body d-flex flex-column">
+                        <h5 class="card-title">{{ product.nom }}</h5>
+                        <p class="card-text text-muted small">{{ product.description[:100] }}...</p>
+                        <div class="mt-auto">
+                            <p class="h5 text-primary">{{ "%.2f"|format(product.prix_base) }} €</p>
+                            <a href="{{ url_for('public.product_detail', product_id=product._id) }}" 
+                               class="btn btn-primary btn-sm w-100">Voir le produit</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        {% else %}
+            <div class="col-12">
+                <p class="text-muted">Aucun produit disponible pour le moment.</p>
+            </div>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}
+

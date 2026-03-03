@@ -1,0 +1,122 @@
+{% extends "admin/base.html" %}
+
+{% block page_title %}Modifier le produit{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-12">
+        <h2 class="mb-4">Modifier le produit</h2>
+    </div>
+</div>
+
+<div class="card">
+    <div class="card-body">
+        <form method="POST" action="{{ url_for('admin.product_edit', product_id=product._id) }}" enctype="multipart/form-data">
+            <div class="mb-3">
+                <label class="form-label">Nom *</label>
+                <input type="text" name="nom" class="form-control" value="{{ product.nom }}" required>
+            </div>
+            
+            <div class="mb-3">
+                <label class="form-label">Description</label>
+                <textarea name="description" class="form-control" rows="4">{{ product.description }}</textarea>
+            </div>
+            
+            <div class="row">
+                <div class="col-md-6 mb-3">
+                    <label class="form-label">Catégorie</label>
+                    <select name="categorie_id" class="form-select">
+                        <option value="">Sélectionner une catégorie</option>
+                        {% for cat in categories %}
+                        <option value="{{ cat._id }}" {% if product.categorie_id == cat._id %}selected{% endif %}>
+                            {{ cat.nom }}
+                        </option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <div class="col-md-6 mb-3">
+                    <label class="form-label">Marque</label>
+                    <input type="text" name="marque" class="form-control" value="{{ product.marque or '' }}">
+                </div>
+            </div>
+            
+            <div class="mb-3">
+                <label class="form-label">Prix de base *</label>
+                <input type="number" name="prix_base" class="form-control" step="0.01" min="0" 
+                       value="{{ product.prix_base }}" required>
+            </div>
+            
+            <!-- Variations -->
+            {% if product.variations and product.variations|length > 0 %}
+            <div class="mb-3">
+                <label class="form-label">Variations</label>
+                <div class="table-responsive">
+                    <table class="table table-sm">
+                        <thead>
+                            <tr>
+                                <th>SKU</th>
+                                <th>Attributs</th>
+                                <th>Prix</th>
+                                <th>Stock</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for variation in product.variations %}
+                            <tr>
+                                <td>
+                                    <input type="hidden" name="variation_id[]" value="{{ variation._id }}">
+                                    {{ variation.sku }}
+                                </td>
+                                <td>
+                                    {% for key, value in variation.attributs.items() %}
+                                    <span class="badge bg-secondary">{{ key }}: {{ value }}</span>
+                                    {% endfor %}
+                                </td>
+                                <td>
+                                    <input type="number" name="variation_price[]" class="form-control form-control-sm" 
+                                           step="0.01" value="{{ variation.prix }}">
+                                </td>
+                                <td>
+                                    <input type="number" name="variation_stock[]" class="form-control form-control-sm" 
+                                           min="0" value="{{ variation.stock }}">
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            {% endif %}
+            
+            <div class="mb-3">
+                <label class="form-label">Ajouter des images</label>
+                <input type="file" name="images" class="form-control" multiple accept="image/*">
+            </div>
+            
+            {% if product.images_principales %}
+            <div class="mb-3">
+                <label class="form-label">Images actuelles</label>
+                <div class="d-flex flex-wrap gap-2">
+                    {% for image in product.images_principales %}
+                    <img src="{{ url_for('static', filename='images/' + image) }}" 
+                         class="img-thumbnail" style="width: 100px; height: 100px; object-fit: cover;"
+                         onerror="this.src='https://via.placeholder.com/100x100'">
+                    {% endfor %}
+                </div>
+            </div>
+            {% endif %}
+            
+            <div class="mb-3 form-check">
+                <input type="checkbox" name="publie" class="form-check-input" id="publie" 
+                       {% if product.publie %}checked{% endif %}>
+                <label class="form-check-label" for="publie">Publier le produit</label>
+            </div>
+            
+            <button type="submit" class="btn btn-primary">Enregistrer</button>
+            <a href="{{ url_for('admin.products_list') }}" class="btn btn-secondary">Annuler</a>
+        </form>
+    </div>
+</div>
+{% endblock %}
+
+

@@ -1,0 +1,103 @@
+{% extends "base.html" %}
+
+{% block title %}Commande - Yin Yang{% endblock %}
+
+{% block content %}
+<div class="container my-5">
+    <h2 class="mb-4" style="color: #0c0f14;">Finaliser la commande</h2>
+    
+    <div class="row">
+        <div class="col-md-8">
+            <div class="card">
+                <div class="card-header">
+                    <h5>Adresse de livraison</h5>
+                </div>
+                <div class="card-body">
+                    <form method="POST" action="{{ url_for('cart.checkout') }}">
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label">Nom *</label>
+                                <input type="text" name="nom" class="form-control" 
+                                       value="{{ user.nom or '' }}" required>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label">Prénom *</label>
+                                <input type="text" name="prenom" class="form-control" 
+                                       value="{{ user.prenom or '' }}" required>
+                            </div>
+                        </div>
+                        
+                        <div class="mb-3">
+                            <label class="form-label">Rue *</label>
+                            <input type="text" name="rue" class="form-control" 
+                                   value="{{ user.adresse.rue if user.adresse else '' }}" required>
+                        </div>
+                        
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label">Code postal *</label>
+                                <input type="text" name="code_postal" class="form-control" 
+                                       value="{{ user.adresse.code_postal if user.adresse else '' }}" required>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label">Ville *</label>
+                                <input type="text" name="ville" class="form-control" 
+                                       value="{{ user.adresse.ville if user.adresse else '' }}" required>
+                            </div>
+                        </div>
+                        
+                        <div class="mb-3">
+                            <label class="form-label">Pays *</label>
+                            <input type="text" name="pays" class="form-control" 
+                                   value="{{ user.adresse.pays if user.adresse else 'France' }}" required>
+                        </div>
+                        
+                        <div class="mb-3">
+                            <label class="form-label">Téléphone *</label>
+                            <input type="tel" name="telephone" class="form-control" 
+                                   value="{{ user.telephone or '' }}" required>
+                        </div>
+                        
+                        <div class="mb-3">
+                            <label class="form-label">Mode de paiement *</label>
+                            <select name="mode_paiement" id="mode_paiement" class="form-select" required>
+                                <option value="carte">Carte bancaire</option>
+                                <option value="paypal">PayPal</option>
+                                <option value="virement">Virement bancaire</option>
+                            </select>
+                        </div>
+                        
+                        <button type="submit" class="btn btn-primary btn-lg w-100">
+                            Continuer vers le paiement
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </div>
+        
+        <div class="col-md-4">
+            <div class="card">
+                <div class="card-header">
+                    <h5>Résumé</h5>
+                </div>
+                <div class="card-body">
+                    <div class="d-flex justify-content-between mb-2">
+                        <span>Sous-total</span>
+                        <span>{{ "%.2f"|format(total) }} €</span>
+                    </div>
+                    <div class="d-flex justify-content-between mb-2">
+                        <span>Livraison</span>
+                        <span>4.99 €</span>
+                    </div>
+                    <hr>
+                    <div class="d-flex justify-content-between">
+                        <strong>Total</strong>
+                        <strong>{{ "%.2f"|format(total + 4.99) }} €</strong>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+

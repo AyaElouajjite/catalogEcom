@@ -1,0 +1,104 @@
+{% extends "admin/base.html" %}
+
+{% block page_title %}Dashboard{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-12">
+        <h2 class="mb-4">Tableau de bord</h2>
+    </div>
+</div>
+
+<!-- Statistiques -->
+<div class="row mb-4">
+    <div class="col-md-3 mb-3">
+        <div class="card bg-primary text-white">
+            <div class="card-body">
+                <h5 class="card-title">Produits</h5>
+                <h2>{{ stats.total_products }}</h2>
+                <small>{{ stats.published_products }} publiés</small>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3 mb-3">
+        <div class="card bg-success text-white">
+            <div class="card-body">
+                <h5 class="card-title">Commandes</h5>
+                <h2>{{ stats.total_orders }}</h2>
+                <small>{{ stats.pending_orders }} en attente</small>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3 mb-3">
+        <div class="card bg-info text-white">
+            <div class="card-body">
+                <h5 class="card-title">Clients</h5>
+                <h2>{{ stats.total_users }}</h2>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3 mb-3">
+        <div class="card bg-warning text-white">
+            <div class="card-body">
+                <h5 class="card-title">Catégories</h5>
+                <h2>{{ stats.total_categories }}</h2>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Commandes récentes -->
+<div class="row">
+    <div class="col-12">
+        <div class="card">
+            <div class="card-header">
+                <h5>Commandes récentes</h5>
+            </div>
+            <div class="card-body">
+                {% if recent_orders %}
+                <div class="table-responsive">
+                    <table class="table table-hover">
+                        <thead>
+                            <tr>
+                                <th>Numéro</th>
+                                <th>Client</th>
+                                <th>Total</th>
+                                <th>Statut</th>
+                                <th>Date</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for order in recent_orders %}
+                            <tr>
+                                <td>{{ order.numero_commande }}</td>
+                                <td>
+                                    {% set client = order.client_id %}
+                                    Client #{{ client[:8] }}
+                                </td>
+                                <td>{{ "%.2f"|format(order.total) }} €</td>
+                                <td>
+                                    <span class="badge bg-{{ 'warning' if order.statut == 'en_attente' else 'success' if order.statut == 'payee' else 'info' }}">
+                                        {{ order.statut }}
+                                    </span>
+                                </td>
+                                <td>{{ order.date_commande.strftime('%d/%m/%Y') if order.date_commande else 'N/A' }}</td>
+                                <td>
+                                    <a href="{{ url_for('admin.order_detail', order_id=order._id) }}" 
+                                       class="btn btn-sm btn-primary">Voir</a>
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+                {% else %}
+                <p class="text-muted">Aucune commande récente</p>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+

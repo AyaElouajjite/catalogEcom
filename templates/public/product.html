@@ -1,0 +1,241 @@
+{% extends "base.html" %}
+
+{% block title %}{{ product.nom }} - Yin Yang{% endblock %}
+
+{% block content %}
+<div class="container my-5">
+    <div class="row">
+        <!-- Images -->
+        <div class="col-md-6">
+            <div id="productCarousel" class="carousel slide" data-bs-ride="carousel">
+                <div class="carousel-inner">
+                    {% if product.images_principales and product.images_principales|length > 0 %}
+                        {% for image in product.images_principales %}
+                        <div class="carousel-item {% if loop.first %}active{% endif %}">
+                            {% if image %}
+                            <img src="{{ url_for('static', filename='images/' + image) }}" 
+                                 class="d-block w-100" 
+                                 style="max-height: 600px; object-fit: contain; background: #0f131b;"
+                                 alt="{{ product.nom }}"
+                                 onerror="this.onerror=null; this.src='https://via.placeholder.com/600x600?text=Produit'; console.error('Image non trouvée: {{ image }}');">
+                            {% else %}
+                            <img src="https://via.placeholder.com/600x600?text=Produit" 
+                                 class="d-block w-100" 
+                                 style="max-height: 600px; object-fit: contain;"
+                                 alt="{{ product.nom }}">
+                            {% endif %}
+                        </div>
+                        {% endfor %}
+                    {% else %}
+                        <div class="carousel-item active">
+                            <img src="https://via.placeholder.com/600x600?text=Produit" 
+                                 class="d-block w-100" 
+                                 style="max-height: 600px; object-fit: contain;"
+                                 alt="{{ product.nom }}">
+                        </div>
+                    {% endif %}
+                </div>
+                {% if product.images_principales|length > 1 %}
+                <button class="carousel-control-prev" type="button" data-bs-target="#productCarousel" data-bs-slide="prev">
+                    <span class="carousel-control-prev-icon"></span>
+                </button>
+                <button class="carousel-control-next" type="button" data-bs-target="#productCarousel" data-bs-slide="next">
+                    <span class="carousel-control-next-icon"></span>
+                </button>
+                {% endif %}
+            </div>
+        </div>
+        
+        <!-- Informations produit -->
+        <div class="col-md-6">
+            <h1>{{ product.nom }}</h1>
+            {% if product.marque %}
+            <p class="text-muted">Marque: {{ product.marque }}</p>
+            {% endif %}
+            
+            <p class="h3 text-primary mb-4">{{ "%.2f"|format(product.prix_base) }} €</p>
+            
+            <div class="mb-4">
+                <p>{{ product.description }}</p>
+            </div>
+            
+            <!-- Formulaire d'ajout au panier -->
+            <form method="POST" action="{{ url_for('cart.add_to_cart') }}" class="mb-4">
+                <input type="hidden" name="product_id" value="{{ product._id }}">
+                
+                {% if product.variations and product.variations|length > 0 %}
+                    <!-- Sélection des attributs variables -->
+                    {% set attributs_config = product.attributs_config %}
+                    <div class="mb-3">
+                        <label class="form-label"><strong>Choisissez vos options :</strong></label>
+                    </div>
+                    {% for attr_name, attr_values in attributs_config.items() %}
+                    <div class="mb-3">
+                        <label class="form-label">{{ attr_name|title }} *</label>
+                        <select name="variation_{{ attr_name }}" class="form-select variation-select" 
+                                data-attr="{{ attr_name }}" required>
+                            <option value="">Sélectionner {{ attr_name }}</option>
+                            {% for value in attr_values %}
+                            <option value="{{ value }}">{{ value }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    {% endfor %}
+                    
+                    <input type="hidden" name="variation_id" id="variation_id_input" value="">
+                    
+                    <div id="variation-info" class="alert alert-info" style="display:none; background: rgba(92,225,230,0.1); border: 1px solid rgba(92,225,230,0.3); color: var(--yang);">
+                        <p id="variation-price" class="mb-1"></p>
+                        <p id="variation-stock" class="mb-0"></p>
+                    </div>
+                {% endif %}
+                
+                <div class="mb-3">
+                    <label class="form-label">Quantité</label>
+                    <input type="number" name="quantity" class="form-control" value="1" min="1" required>
+                </div>
+                
+                {% if current_user %}
+                <button type="submit" class="btn btn-primary btn-lg w-100">
+                    <i class="bi bi-cart-plus"></i> Ajouter au panier
+                </button>
+                {% else %}
+                <a href="{{ url_for('auth.login', next=request.url) }}" class="btn btn-primary btn-lg w-100">
+                    <i class="bi bi-box-arrow-in-right"></i> Se connecter pour ajouter
+                </a>
+                {% endif %}
+            </form>
+            
+            <!-- Caractéristiques -->
+            {% if product.caracteristiques %}
+            <div class="mt-4">
+                <h5>Caractéristiques</h5>
+                <table class="table table-sm">
+                    {% for carac in product.caracteristiques %}
+                    <tr>
+                        <td><strong>{{ carac.nom }}</strong></td>
+                        <td>{{ carac.valeur }}</td>
+                    </tr>
+                    {% endfor %}
+                </table>
+            </div>
+            {% endif %}
+        </div>
+    </div>
+    
+    <!-- Produits similaires -->
+    {% if similar_products %}
+    <div class="row mt-5">
+        <div class="col-12">
+            <h3>Produits similaires</h3>
+            <div class="row">
+                {% for similar in similar_products %}
+                <div class="col-md-3 mb-4">
+                    <div class="card h-100 product-card">
+                        {% if similar.images_principales %}
+                        <img src="{{ url_for('static', filename='images/' + similar.images_principales[0]) }}" 
+                             class="card-img-top" alt="{{ similar.nom }}"
+                             onerror="this.src='https://via.placeholder.com/300x300?text=Produit'">
+                        {% else %}
+                        <img src="https://via.placeholder.com/300x300?text=Produit" class="card-img-top" alt="{{ similar.nom }}">
+                        {% endif %}
+                        <div class="card-body">
+                            <h6 class="card-title">{{ similar.nom }}</h6>
+                            <p class="h6 text-primary">{{ "%.2f"|format(similar.prix_base) }} €</p>
+                            <a href="{{ url_for('public.product_detail', product_id=similar._id) }}" 
+                               class="btn btn-sm btn-primary">Voir</a>
+                        </div>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+    {% endif %}
+</div>
+
+{% block extra_js %}
+<script>
+// Gestion des variations de produit
+{% if product.variations and product.variations|length > 0 %}
+const variations = {{ product.variations|tojson }};
+const attributsConfig = {{ product.attributs_config|tojson }};
+
+function updateVariationInfo() {
+    const selectedAttrs = {};
+    let allSelected = true;
+    
+    {% for attr_name in product.attributs_config.keys() %}
+    const {{ attr_name }}Select = document.querySelector('select[name="variation_{{ attr_name }}"]');
+    if ({{ attr_name }}Select) {
+        const value = {{ attr_name }}Select.value;
+        if (value) {
+            selectedAttrs['{{ attr_name }}'] = value;
+        } else {
+            allSelected = false;
+        }
+    }
+    {% endfor %}
+    
+    const infoDiv = document.getElementById('variation-info');
+    const hiddenInput = document.getElementById('variation_id_input');
+    
+    // Vérifier si tous les attributs sont sélectionnés
+    if (!allSelected || Object.keys(selectedAttrs).length === 0) {
+        infoDiv.style.display = 'none';
+        if (hiddenInput) hiddenInput.value = '';
+        return;
+    }
+    
+    // Trouver la variation correspondante
+    const variation = variations.find(v => {
+        if (!v.attributs) return false;
+        return Object.keys(selectedAttrs).every(key => 
+            v.attributs[key] === selectedAttrs[key]
+        ) && Object.keys(v.attributs).length === Object.keys(selectedAttrs).length;
+    });
+    
+    if (variation) {
+        infoDiv.style.display = 'block';
+        const price = variation.prix || {{ product.prix_base }};
+        document.getElementById('variation-price').innerHTML = `<strong>Prix: ${price.toFixed(2)} €</strong>`;
+        
+        const stock = variation.stock || 0;
+        const stockText = stock > 0 
+            ? `<span style="color: #5ce1e6;">Stock: ${stock} disponible(s)</span>`
+            : `<span style="color: #ff5f6d;">Rupture de stock</span>`;
+        document.getElementById('variation-stock').innerHTML = stockText;
+        
+        if (hiddenInput) {
+            hiddenInput.value = variation._id;
+        }
+        
+        // Désactiver le bouton d'ajout si pas de stock
+        const submitBtn = document.querySelector('form button[type="submit"]');
+        if (submitBtn) {
+            if (stock <= 0) {
+                submitBtn.disabled = true;
+                submitBtn.textContent = 'Rupture de stock';
+            } else {
+                submitBtn.disabled = false;
+                submitBtn.innerHTML = '<i class="bi bi-cart-plus"></i> Ajouter au panier';
+            }
+        }
+    } else {
+        infoDiv.style.display = 'none';
+        if (hiddenInput) hiddenInput.value = '';
+    }
+}
+
+// Écouter les changements sur tous les selects de variation
+document.querySelectorAll('.variation-select').forEach(select => {
+    select.addEventListener('change', updateVariationInfo);
+});
+
+// Appeler une première fois pour vérifier l'état initial
+updateVariationInfo();
+{% endif %}
+</script>
+{% endblock %}
+{% endblock %}
+

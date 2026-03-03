@@ -1,0 +1,92 @@
+{% extends "admin/base.html" %}
+
+{% block page_title %}Gestion des produits{% endblock %}
+
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h2>Produits</h2>
+    <a href="{{ url_for('admin.product_add') }}" class="btn btn-primary">
+        <i class="bi bi-plus-circle"></i> Nouveau produit
+    </a>
+</div>
+
+<div class="card">
+    <div class="card-body">
+        {% if products %}
+        <div class="table-responsive">
+            <table class="table table-hover">
+                <thead>
+                    <tr>
+                        <th>Image</th>
+                        <th>Nom</th>
+                        <th>Catégorie</th>
+                        <th>Prix</th>
+                        <th>Stock</th>
+                        <th>Publié</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for product in products %}
+                    <tr>
+                        <td>
+                            {% if product.images_principales %}
+                            <img src="{{ url_for('static', filename='images/' + product.images_principales[0]) }}" 
+                                 class="img-thumbnail" style="width: 50px; height: 50px; object-fit: cover;"
+                                 onerror="this.src='https://via.placeholder.com/50x50'">
+                            {% else %}
+                            <img src="https://via.placeholder.com/50x50" class="img-thumbnail">
+                            {% endif %}
+                        </td>
+                        <td>{{ product.nom }}</td>
+                        <td>
+                            {% if product.categorie_id %}
+                                {% for cat in categories %}
+                                    {% if cat._id == product.categorie_id %}
+                                        {{ cat.nom }}
+                                    {% endif %}
+                                {% endfor %}
+                            {% else %}
+                                -
+                            {% endif %}
+                        </td>
+                        <td>{{ "%.2f"|format(product.prix_base) }} €</td>
+                        <td>
+                            {% if product.variations %}
+                                {{ product.variations|sum(attribute='stock') }}
+                            {% else %}
+                                -
+                            {% endif %}
+                        </td>
+                        <td>
+                            {% if product.publie %}
+                            <span class="badge bg-success">Oui</span>
+                            {% else %}
+                            <span class="badge bg-secondary">Non</span>
+                            {% endif %}
+                        </td>
+                        <td>
+                            <a href="{{ url_for('admin.product_edit', product_id=product._id) }}" 
+                               class="btn btn-sm btn-primary">
+                                <i class="bi bi-pencil"></i>
+                            </a>
+                            <form method="POST" action="{{ url_for('admin.product_delete', product_id=product._id) }}" 
+                                  class="d-inline" onsubmit="return confirm('Êtes-vous sûr de vouloir supprimer ce produit ?');">
+                                <button type="submit" class="btn btn-sm btn-danger">
+                                    <i class="bi bi-trash"></i>
+                                </button>
+                            </form>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        {% else %}
+        <p class="text-muted">Aucun produit</p>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}
+
+

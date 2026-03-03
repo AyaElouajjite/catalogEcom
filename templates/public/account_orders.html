@@ -1,0 +1,77 @@
+{% extends "base.html" %}
+
+{% block title %}Mes commandes - E-Commerce{% endblock %}
+
+{% block content %}
+<div class="container my-5">
+    <h2 class="mb-4" style="color: #0c0f14;">Mes commandes</h2>
+    
+    {% if orders %}
+    <div class="row">
+        {% for order in orders %}
+        <div class="col-md-6 col-lg-4 mb-4">
+            <div class="card h-100 shadow-sm" style="border: 1px solid rgba(92,225,230,0.2);">
+                <div class="card-header bg-transparent" style="border-bottom: 1px solid rgba(255,255,255,0.1);">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <h5 class="mb-0" style="color: #0c0f14;">Commande {{ order.numero_commande }}</h5>
+                        <span class="badge bg-{{ 'warning' if order.statut == 'en_attente' else 'success' if order.statut == 'payee' else 'info' }}">
+                            {{ order.statut }}
+                        </span>
+                    </div>
+                    <small class="text-muted">{{ order.date_commande.strftime('%d/%m/%Y à %H:%M') if order.date_commande else 'N/A' }}</small>
+                </div>
+                <div class="card-body">
+                    <div class="mb-3">
+                        <h6 style="color: #0c0f14; margin-bottom: 1rem;">Articles commandés :</h6>
+                        <div class="order-items-preview">
+                            {% for article in order.articles[:3] %}
+                            <div class="d-flex align-items-center mb-2">
+                                {% if article.image %}
+                                <img src="{{ url_for('static', filename='images/' + article.image) }}" 
+                                     class="me-2" 
+                                     style="width: 50px; height: 50px; object-fit: cover; border-radius: 8px;"
+                                     onerror="this.src='https://via.placeholder.com/50x50?text=Produit'">
+                                {% else %}
+                                <div class="me-2" style="width: 50px; height: 50px; background: rgba(255,255,255,0.1); border-radius: 8px; display: flex; align-items: center; justify-content: center;">
+                                    <small>N/A</small>
+                                </div>
+                                {% endif %}
+                                <div class="flex-grow-1">
+                                    <div style="color: #0c0f14; font-size: 0.9rem; font-weight: 500;">{{ article.nom }}</div>
+                                    <small class="text-muted">Qté: {{ article.quantite }} × {{ "%.2f"|format(article.prix_unitaire) }} €</small>
+                                </div>
+                            </div>
+                            {% endfor %}
+                            {% if order.articles|length > 3 %}
+                            <div class="text-center mt-2">
+                                <small class="text-muted">+ {{ order.articles|length - 3 }} autre(s) article(s)</small>
+                            </div>
+                            {% endif %}
+                        </div>
+                    </div>
+                    <hr style="border-color: rgba(255,255,255,0.1);">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <strong style="color: #0c0f14;">Total :</strong>
+                        <strong style="color: var(--accent-2); font-size: 1.2rem;">{{ "%.2f"|format(order.total) }} €</strong>
+                    </div>
+                </div>
+                <div class="card-footer bg-transparent" style="border-top: 1px solid rgba(255,255,255,0.1);">
+                    <a href="{{ url_for('public.order_detail', order_id=order._id) }}" 
+                       class="btn btn-primary btn-sm w-100">
+                        Voir les détails
+                    </a>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+    {% else %}
+    <div class="alert alert-info" style="background: rgba(92,225,230,0.1); border: 1px solid rgba(92,225,230,0.3); color: var(--yang);">
+        <p class="mb-3">Vous n'avez pas encore passé de commande.</p>
+        <a href="{{ url_for('public.catalogue') }}" class="btn btn-primary">Voir le catalogue</a>
+    </div>
+    {% endif %}
+</div>
+{% endblock %}
+
+

@@ -1,0 +1,88 @@
+{% extends "base.html" %}
+
+{% block title %}Mon compte - E-Commerce{% endblock %}
+
+{% block content %}
+<div class="container my-5">
+    <h2 class="mb-4" style="color: #0c0f14;">Mon compte</h2>
+    
+    <div class="row">
+        <div class="col-md-3">
+            <div class="list-group">
+                <a href="{{ url_for('public.account') }}" class="list-group-item list-group-item-action active">
+                    Profil
+                </a>
+                <a href="{{ url_for('public.account_orders') }}" class="list-group-item list-group-item-action">
+                    Mes commandes
+                </a>
+            </div>
+        </div>
+        
+        <div class="col-md-9">
+            <div class="card mb-4">
+                <div class="card-header">
+                    <h5>Informations personnelles</h5>
+                </div>
+                <div class="card-body">
+                    <p><strong>Nom:</strong> {{ current_user.prenom }} {{ current_user.nom }}</p>
+                    <p><strong>Email:</strong> {{ current_user.email }}</p>
+                    {% if current_user.telephone %}
+                    <p><strong>Téléphone:</strong> {{ current_user.telephone }}</p>
+                    {% endif %}
+                </div>
+            </div>
+            
+            <div class="card">
+                <div class="card-header">
+                    <h5>Modifier mes informations</h5>
+                </div>
+                <div class="card-body">
+                    <form method="POST" action="{{ url_for('public.account_update') }}">
+                        <div class="mb-3">
+                            <label class="form-label">Email *</label>
+                            <input type="email" name="email" class="form-control" 
+                                   value="{{ current_user.email }}" required>
+                        </div>
+                        
+                        <div class="mb-3">
+                            <label class="form-label">Téléphone</label>
+                            <input type="tel" name="telephone" class="form-control" 
+                                   value="{{ current_user.telephone or '' }}" 
+                                   placeholder="+33 6 12 34 56 78">
+                        </div>
+                        
+                        <hr style="border-color: rgba(255,255,255,0.1);">
+                        
+                        <h6 class="mb-3" style="color: var(--yang);">Changer le mot de passe</h6>
+                        <div class="mb-3">
+                            <label class="form-label">Mot de passe actuel</label>
+                            <input type="password" name="current_password" class="form-control" 
+                                   placeholder="Laissez vide si vous ne souhaitez pas changer">
+                        </div>
+                        
+                        <div class="mb-3">
+                            <label class="form-label">Nouveau mot de passe</label>
+                            <input type="password" name="new_password" class="form-control" 
+                                   placeholder="Laissez vide si vous ne souhaitez pas changer"
+                                   minlength="6">
+                            <small class="text-muted">Minimum 6 caractères</small>
+                        </div>
+                        
+                        <div class="mb-3">
+                            <label class="form-label">Confirmer le nouveau mot de passe</label>
+                            <input type="password" name="confirm_password" class="form-control" 
+                                   placeholder="Confirmez le nouveau mot de passe">
+                        </div>
+                        
+                        <button type="submit" class="btn btn-primary">
+                            <i class="bi bi-save"></i> Enregistrer les modifications
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+

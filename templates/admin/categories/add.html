@@ -1,0 +1,38 @@
+{% extends "admin/base.html" %}
+
+{% block page_title %}Nouvelle catégorie{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-12">
+        <h2 class="mb-4">Nouvelle catégorie</h2>
+    </div>
+</div>
+
+<div class="card">
+    <div class="card-body">
+        <form method="POST" action="{{ url_for('admin.category_add') }}">
+            <div class="mb-3">
+                <label class="form-label">Nom *</label>
+                <input type="text" name="nom" class="form-control" required>
+            </div>
+            
+            <div class="mb-3">
+                <label class="form-label">Slug</label>
+                <input type="text" name="slug" class="form-control" placeholder="Sera généré automatiquement si vide">
+                <small class="text-muted">URL-friendly version du nom (ex: vetements-homme)</small>
+            </div>
+            
+            <div class="mb-3">
+                <label class="form-label">Description</label>
+                <textarea name="description" class="form-control" rows="3"></textarea>
+            </div>
+            
+            <button type="submit" class="btn btn-primary">Créer</button>
+            <a href="{{ url_for('admin.categories_list') }}" class="btn btn-secondary">Annuler</a>
+        </form>
+    </div>
+</div>
+{% endblock %}
+
+

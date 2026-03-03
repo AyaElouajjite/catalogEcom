@@ -1,0 +1,123 @@
+{% extends "base.html" %}
+
+{% block title %}Catalogue - Yin Yang{% endblock %}
+
+{% block content %}
+<div class="container my-4">
+    <div class="row">
+        <!-- Sidebar Filtres -->
+        <div class="col-md-3">
+            <div class="card">
+                <div class="card-header">
+                    <h5>Filtres</h5>
+                </div>
+                <div class="card-body">
+                    <form method="GET" action="{{ url_for('public.catalogue') }}">
+                        <!-- Recherche -->
+                        <div class="mb-3">
+                            <label class="form-label">Recherche</label>
+                            <input type="text" name="q" class="form-control" value="{{ search_query }}" placeholder="Rechercher...">
+                        </div>
+                        
+                        <!-- Catégories -->
+                        <div class="mb-3">
+                            <label class="form-label">Catégorie</label>
+                            <select name="categorie" class="form-select">
+                                <option value="">Toutes</option>
+                                {% for cat in categories %}
+                                <option value="{{ cat.slug }}" {% if current_category == cat.slug %}selected{% endif %}>
+                                    {{ cat.nom }}
+                                </option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                        
+                        <!-- Prix -->
+                        <div class="mb-3">
+                            <label class="form-label">Prix min</label>
+                            <input type="number" name="min_price" class="form-control" value="{{ min_price }}" step="0.01">
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Prix max</label>
+                            <input type="number" name="max_price" class="form-control" value="{{ max_price }}" step="0.01">
+                        </div>
+                        
+                        <button type="submit" class="btn btn-primary w-100">Appliquer</button>
+                        <a href="{{ url_for('public.catalogue') }}" class="btn btn-secondary w-100 mt-2">Réinitialiser</a>
+                    </form>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Liste Produits -->
+        <div class="col-md-9">
+            <div class="d-flex justify-content-between align-items-center mb-4">
+                <h2>Catalogue</h2>
+                <span class="text-muted">{{ total }} produit(s) trouvé(s)</span>
+            </div>
+            
+            <div class="row">
+                {% if products %}
+                    {% for product in products %}
+                    <div class="col-md-6 col-lg-4 mb-4">
+                        <div class="card h-100 product-card">
+                            {% if product.images_principales and product.images_principales|length > 0 and product.images_principales[0] %}
+                            <img src="{{ url_for('static', filename='images/' + product.images_principales[0]) }}" 
+                                 class="card-img-top" 
+                                 style="height: 220px; object-fit: cover; background: #0f131b;"
+                                 alt="{{ product.nom }}"
+                                 onerror="this.onerror=null; this.src='https://via.placeholder.com/300x300?text=Produit'; console.error('Image non trouvée: {{ product.images_principales[0] }}');">
+                            {% else %}
+                            <img src="https://via.placeholder.com/300x300?text=Produit" 
+                                 class="card-img-top" 
+                                 style="height: 220px; object-fit: cover;"
+                                 alt="{{ product.nom }}">
+                            {% endif %}
+                            <div class="card-body d-flex flex-column">
+                                <h5 class="card-title">{{ product.nom }}</h5>
+                                <p class="card-text text-muted small">{{ product.description[:100] }}...</p>
+                                <div class="mt-auto">
+                                    <p class="h5 text-primary">{{ "%.2f"|format(product.prix_base) }} €</p>
+                                    <a href="{{ url_for('public.product_detail', product_id=product._id) }}" 
+                                       class="btn btn-primary btn-sm w-100">Voir le produit</a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    {% endfor %}
+                {% else %}
+                    <div class="col-12">
+                        <div class="alert alert-info">Aucun produit ne correspond à vos critères.</div>
+                    </div>
+                {% endif %}
+            </div>
+            
+            <!-- Pagination -->
+            {% if total_pages > 1 %}
+            <nav aria-label="Page navigation">
+                <ul class="pagination justify-content-center">
+                    {% if page > 1 %}
+                    <li class="page-item">
+                        <a class="page-link" href="?page={{ page - 1 }}{% if current_category %}&categorie={{ current_category }}{% endif %}{% if search_query %}&q={{ search_query }}{% endif %}">Précédent</a>
+                    </li>
+                    {% endif %}
+                    
+                    {% for p in range(1, total_pages + 1) %}
+                    <li class="page-item {% if p == page %}active{% endif %}">
+                        <a class="page-link" href="?page={{ p }}{% if current_category %}&categorie={{ current_category }}{% endif %}{% if search_query %}&q={{ search_query }}{% endif %}">{{ p }}</a>
+                    </li>
+                    {% endfor %}
+                    
+                    {% if page < total_pages %}
+                    <li class="page-item">
+                        <a class="page-link" href="?page={{ page + 1 }}{% if current_category %}&categorie={{ current_category }}{% endif %}{% if search_query %}&q={{ search_query }}{% endif %}">Suivant</a>
+                    </li>
+                    {% endif %}
+                </ul>
+            </nav>
+            {% endif %}
+        </div>
+    </div>
+</div>
+{% endblock %}
+

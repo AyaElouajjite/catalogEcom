@@ -1,0 +1,56 @@
+{% extends "admin/base.html" %}
+
+{% block page_title %}Gestion des catégories{% endblock %}
+
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h2>Catégories</h2>
+    <a href="{{ url_for('admin.category_add') }}" class="btn btn-primary">
+        <i class="bi bi-plus-circle"></i> Nouvelle catégorie
+    </a>
+</div>
+
+<div class="card">
+    <div class="card-body">
+        {% if categories %}
+        <div class="table-responsive">
+            <table class="table table-hover">
+                <thead>
+                    <tr>
+                        <th>Nom</th>
+                        <th>Slug</th>
+                        <th>Description</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for category in categories %}
+                    <tr>
+                        <td>{{ category.nom }}</td>
+                        <td><code>{{ category.slug }}</code></td>
+                        <td>{{ category.description or '-' }}</td>
+                        <td>
+                            <a href="{{ url_for('admin.category_edit', category_id=category._id) }}" 
+                               class="btn btn-sm btn-primary">
+                                <i class="bi bi-pencil"></i>
+                            </a>
+                            <form method="POST" action="{{ url_for('admin.category_delete', category_id=category._id) }}" 
+                                  class="d-inline" onsubmit="return confirm('Êtes-vous sûr de vouloir supprimer cette catégorie ?');">
+                                <button type="submit" class="btn btn-sm btn-danger">
+                                    <i class="bi bi-trash"></i>
+                                </button>
+                            </form>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        {% else %}
+        <p class="text-muted">Aucune catégorie</p>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}
+
+

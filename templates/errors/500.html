@@ -1,0 +1,14 @@
+{% extends "base.html" %}
+
+{% block title %}Erreur serveur{% endblock %}
+
+{% block content %}
+<div class="container my-5 text-center">
+    <h1 class="display-1">500</h1>
+    <h2>Erreur serveur</h2>
+    <p class="lead">Une erreur s'est produite. Veuillez réessayer plus tard.</p>
+    <a href="{{ url_for('public.index') }}" class="btn btn-primary">Retour à l'accueil</a>
+</div>
+{% endblock %}
+
+
