@@ -1,58 +1,60 @@
-# 🛍️ CatalogEcom — Catalogue e-commerce avec Flask et MongoDB
+# CatalogEcom — Plateforme e-commerce avec Flask et MongoDB
 
 ![Python](https://img.shields.io/badge/Python-3.8+-3776AB?logo=python&logoColor=white)
 ![Flask](https://img.shields.io/badge/Flask-3.0-000000?logo=flask&logoColor=white)
 ![MongoDB](https://img.shields.io/badge/MongoDB-47A248?logo=mongodb&logoColor=white)
 
-Application web **full-stack** d'e-commerce : une boutique publique pour les clients et un back-office complet pour gérer le catalogue, les commandes et les utilisateurs. Les données sont stockées dans une base **NoSQL MongoDB**.
+Application web e-commerce full-stack comprenant une boutique en ligne pour les clients et un back-office pour l'administration du catalogue, des commandes et des utilisateurs. Les données sont stockées dans une base NoSQL MongoDB.
 
----
+## Fonctionnalités
 
-## ✨ Fonctionnalités
+**Boutique en ligne**
+- Catalogue de produits avec filtres
+- Fiches produits avec attributs variables (taille, couleur, etc.)
+- Panier, commande et paiement
+- Espace client avec historique des commandes
 
-### 🛒 Boutique publique
-- Catalogue de produits avec **filtres**
-- Fiche produit avec **attributs variables** (taille, couleur…)
-- **Panier** d'achat
-- Processus de **commande** et de **paiement**
-- **Espace client** : compte et historique des commandes
+**Back-office**
+- Tableau de bord avec indicateurs
+- Gestion des produits et des catégories, avec téléversement d'images
+- Gestion des commandes
+- Gestion des utilisateurs
 
-### 🧑‍💼 Back-office administrateur
-- **Tableau de bord** avec statistiques
-- Gestion des **produits** et des **catégories** (CRUD, upload d'images)
-- Gestion des **commandes**
-- Gestion des **utilisateurs**
+## Points techniques
 
-### 🔐 Sécurité
-- Inscription et connexion
-- Mots de passe chiffrés avec **bcrypt**
+- Application Flask organisée en **Blueprints** (public, authentification, panier, administration)
+- Modélisation de documents MongoDB adaptée aux attributs variables des produits
+- Hachage des mots de passe avec **bcrypt** et contrôle d'accès à l'espace d'administration
+- Configuration externalisée par variables d'environnement (`python-dotenv`)
+- Script d'initialisation de la base de données
+- Pages d'erreur personnalisées (404, 500)
 
-## 🛠️ Technologies
+## Stack technique
 
-| Couche | Outils |
+| Domaine | Technologies |
 |---|---|
 | Backend | Python, Flask, Jinja2 |
-| Base de données | MongoDB (PyMongo) |
+| Base de données | MongoDB, PyMongo |
 | Frontend | HTML, CSS, JavaScript |
-| Autres | bcrypt, python-dotenv, Pillow |
+| Sécurité et outils | bcrypt, python-dotenv, Pillow |
 
-## 🏗️ Architecture
+## Architecture
 
 ```
 catalogEcom/
-├── app.py            # Point d'entrée Flask
+├── app.py            # Point d'entrée
 ├── init_db.py        # Initialisation de la base
 ├── src/
-│   ├── models/       # Modèles MongoDB (product, category, order, user)
-│   ├── routes/       # Routes : public, auth, cart, admin
+│   ├── models/       # Produits, catégories, commandes, utilisateurs
+│   ├── routes/       # Public, authentification, panier, administration
 │   └── utils/        # Authentification
-├── templates/        # Vues : public, auth, admin
-└── static/           # CSS, JS, images
+├── templates/        # Vues publiques, authentification, administration
+└── static/           # CSS, JavaScript, images
 ```
 
-## 🚀 Installation
+## Installation
 
-**Prérequis :** Python 3.8+, MongoDB Community Server
+**Prérequis :** Python 3.8 ou supérieur, MongoDB Community Server.
 
 ```bash
 git clone https://github.com/AyaElouajjite/catalogEcom.git
@@ -63,24 +65,24 @@ venv\Scripts\activate        # Windows
 # source venv/bin/activate   # Linux / macOS
 
 pip install -r requirements.txt
-cp env.example .env          # adapter la configuration si nécessaire
+cp env.example .env
 
 python init_db.py
 python app.py
 ```
 
-L'application est disponible sur **http://localhost:5000**.
+L'application est accessible sur `http://localhost:5000`.
 
-Guides complémentaires : [`QUICKSTART.md`](QUICKSTART.md), [`INSTALL_MONGODB.md`](INSTALL_MONGODB.md), [`MONGODB_TROUBLESHOOTING.md`](MONGODB_TROUBLESHOOTING.md).
+Documentation complémentaire : [QUICKSTART.md](QUICKSTART.md), [INSTALL_MONGODB.md](INSTALL_MONGODB.md), [MONGODB_TROUBLESHOOTING.md](MONGODB_TROUBLESHOOTING.md).
 
-## 🔐 Compte administrateur par défaut
+## Compte administrateur par défaut
 
 | E-mail | Mot de passe |
 |---|---|
 | `admin@example.com` | `admin123` |
 
-> ⚠️ Pensez à modifier ce mot de passe en production.
+Ce mot de passe doit être modifié avant toute mise en production.
 
-## 👩‍💻 Auteur
+## Contact
 
-**Aya Elouajjite** — [@AyaElouajjite](https://github.com/AyaElouajjite)
+**Aya Elouajjite** — [github.com/AyaElouajjite](https://github.com/AyaElouajjite)
