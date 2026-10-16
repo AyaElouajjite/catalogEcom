@@ -1,0 +1,3 @@
+# Statistiques de langage GitHub : ignorer les gabarits HTML et les fichiers statiques
+*.html linguist-detectable=false
+*.css linguist-detectable=false
