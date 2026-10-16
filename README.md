@@ -1,109 +1,86 @@
-# E-Commerce Product Catalog Web
+# 🛍️ CatalogEcom — Catalogue e-commerce avec Flask et MongoDB
 
-Application web full-stack de gestion e-commerce développée avec Python (Flask) et MongoDB.
+![Python](https://img.shields.io/badge/Python-3.8+-3776AB?logo=python&logoColor=white)
+![Flask](https://img.shields.io/badge/Flask-3.0-000000?logo=flask&logoColor=white)
+![MongoDB](https://img.shields.io/badge/MongoDB-47A248?logo=mongodb&logoColor=white)
+
+Application web **full-stack** d'e-commerce : une boutique publique pour les clients et un back-office complet pour gérer le catalogue, les commandes et les utilisateurs. Les données sont stockées dans une base **NoSQL MongoDB**.
+
+---
+
+## ✨ Fonctionnalités
+
+### 🛒 Boutique publique
+- Catalogue de produits avec **filtres**
+- Fiche produit avec **attributs variables** (taille, couleur…)
+- **Panier** d'achat
+- Processus de **commande** et de **paiement**
+- **Espace client** : compte et historique des commandes
+
+### 🧑‍💼 Back-office administrateur
+- **Tableau de bord** avec statistiques
+- Gestion des **produits** et des **catégories** (CRUD, upload d'images)
+- Gestion des **commandes**
+- Gestion des **utilisateurs**
+
+### 🔐 Sécurité
+- Inscription et connexion
+- Mots de passe chiffrés avec **bcrypt**
+
+## 🛠️ Technologies
+
+| Couche | Outils |
+|---|---|
+| Backend | Python, Flask, Jinja2 |
+| Base de données | MongoDB (PyMongo) |
+| Frontend | HTML, CSS, JavaScript |
+| Autres | bcrypt, python-dotenv, Pillow |
+
+## 🏗️ Architecture
+
+```
+catalogEcom/
+├── app.py            # Point d'entrée Flask
+├── init_db.py        # Initialisation de la base
+├── src/
+│   ├── models/       # Modèles MongoDB (product, category, order, user)
+│   ├── routes/       # Routes : public, auth, cart, admin
+│   └── utils/        # Authentification
+├── templates/        # Vues : public, auth, admin
+└── static/           # CSS, JS, images
+```
 
 ## 🚀 Installation
 
-### Prérequis
+**Prérequis :** Python 3.8+, MongoDB Community Server
 
-- Python 3.8+
-- MongoDB Community Server
-- Navigateur web moderne
-
-### Étapes d'installation
-
-1. **Cloner le projet**
 ```bash
-git clone <repository-url>
-cd nosqleco
-```
+git clone https://github.com/AyaElouajjite/catalogEcom.git
+cd catalogEcom
 
-2. **Créer un environnement virtuel**
-```bash
 python -m venv venv
-# Windows
-venv\Scripts\activate
-# Linux/Mac
-source venv/bin/activate
-```
+venv\Scripts\activate        # Windows
+# source venv/bin/activate   # Linux / macOS
 
-3. **Installer les dépendances**
-```bash
 pip install -r requirements.txt
-```
+cp env.example .env          # adapter la configuration si nécessaire
 
-4. **Configurer MongoDB**
-- Démarrer MongoDB Community Server
-- Créer un fichier `.env` à partir de `.env.example`
-- Modifier les variables d'environnement si nécessaire
-
-5. **Initialiser la base de données**
-```bash
 python init_db.py
-```
-
-6. **Lancer l'application**
-```bash
 python app.py
 ```
 
-L'application sera accessible sur `http://localhost:5000`
+L'application est disponible sur **http://localhost:5000**.
 
-## 📁 Structure du Projet
+Guides complémentaires : [`QUICKSTART.md`](QUICKSTART.md), [`INSTALL_MONGODB.md`](INSTALL_MONGODB.md), [`MONGODB_TROUBLESHOOTING.md`](MONGODB_TROUBLESHOOTING.md).
 
-```
-ecommerce-web/
-├── app.py                 # Application principale Flask
-├── requirements.txt       # Dépendances Python
-├── .env                  # Variables d'environnement
-├── init_db.py           # Script d'initialisation BDD
-│
-├── static/              # Fichiers statiques
-│   ├── css/
-│   ├── js/
-│   └── images/
-│
-├── templates/           # Templates Jinja2
-│   ├── public/
-│   ├── auth/
-│   └── admin/
-│
-└── src/                 # Code source
-    ├── models/          # Modèles MongoDB
-    ├── routes/          # Routes Flask
-    ├── forms/           # Formulaires
-    ├── utils/           # Utilitaires
-    └── services/        # Services métier
-```
+## 🔐 Compte administrateur par défaut
 
-## 🔐 Comptes par défaut
+| E-mail | Mot de passe |
+|---|---|
+| `admin@example.com` | `admin123` |
 
-Après l'initialisation, un compte administrateur est créé :
-- Email: admin@example.com
-- Mot de passe: admin123
+> ⚠️ Pensez à modifier ce mot de passe en production.
 
-**⚠️ Important : Changez ce mot de passe en production !**
+## 👩‍💻 Auteur
 
-## 🛠️ Fonctionnalités
-
-### Frontend Public
-- Catalogue produits avec filtres
-- Détail produit avec attributs variables
-- Panier d'achat
-- Processus de commande
-- Espace client
-
-### Backend Admin
-- Dashboard avec statistiques
-- Gestion produits (CRUD)
-- Gestion attributs variables
-- Gestion commandes
-- Gestion utilisateurs
-
-## 📝 Notes
-
-- Les images uploadées sont stockées dans `static/images/uploads/`
-- MongoDB doit être démarré avant de lancer l'application
-- En développement, le mode debug est activé
-
-
+**Aya Elouajjite** — [@AyaElouajjite](https://github.com/AyaElouajjite)
